@@ -1,0 +1,48 @@
+FC=gfortran
+SRC=$(addprefix src/, \
+	2D-spline.f \
+	C6Js.f \
+	C6r.f \
+	calc_potential.f90 \
+	Celr.f \
+	CJe.f \
+	cleb.f \
+	dynamic_parameters_3D.f90 \
+	faclog.f \
+	index.f90 \
+	PES_3D_subroutine_ozone_L3.f90 \
+	splin.f90 \
+	VLGRoo.f )
+
+OBJ=$(addprefix src/, \
+	2D-spline.o \
+	C6Js.o \
+	C6r.o \
+	calc_potential.o \
+	Celr.o \
+	CJe.o \
+	cleb.o \
+	dynamic_parameters_3D.o \
+	faclog.o \
+	index.o \
+	PES_3D_subroutine_ozone_L3.o \
+	splin.o \
+	VLGRoo.o )
+
+EXE=libdawes.so
+
+FFLAGS=-O2 -fpic
+
+all: $(OBJ)
+	        $(FC) -shared -fpic $(FFLAGS) $(OBJ) $(INCLUDE_PATH) $(LIB_PATH) $(LIBSHDF) $(LIBS) -o $(EXE)
+	        cp $(EXE) ../$(EXE)
+
+$(OBJ) : Makefile
+
+%.o:%.f90
+	        $(FC) $(FFLAGS) $(DEFS) $(INCLUDE_PATH) -c $< -o $@
+%.o:%.F90
+	        $(FC) $(FFLAGS) $(DEFS) $(INCLUDE_PATH) -c $< -o $@
+
+clean:
+	rm -rf $(OBJ) *.o *.mod
